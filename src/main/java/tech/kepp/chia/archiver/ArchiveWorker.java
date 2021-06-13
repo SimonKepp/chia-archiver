@@ -40,7 +40,7 @@ public class ArchiveWorker implements Runnable {
 			// this is an ordinary file
 			if (isPlot(source)) {
 				info("archiving plot [" + source.getPath() + "]");
-				TargetFolderInfo targetFolder = coordinator.chooseTargetFolderRandom();
+				TargetFolderInfo targetFolder = coordinator.chooseTargetFolder();
 				try {
 					moveFile(source, targetFolder);
 				} catch (IOException e) {
@@ -56,6 +56,7 @@ public class ArchiveWorker implements Runnable {
 	private void moveFile(File src, TargetFolderInfo targetFolder) throws IOException {
 		targetFolder.addJobInProgress();
 		File target = new File(targetFolder.getFolder(), src.getName());
+		//TODO: skip moving file if target already exists
 		info("Moving file [" + src.getPath() + "] to [" + target.getPath());
 		InputStream in = new FileInputStream(src);
 		OutputStream out = new FileOutputStream(target);

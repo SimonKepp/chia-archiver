@@ -13,12 +13,14 @@ public class PlotArchiver {
 	private long blocksMoved = 0;
 	private long filesMoved = 0;
 	private long startTime;
+	private Configuration config;
 	private ExecutorService executor;
 	private List<File> stagingDirs = new ArrayList<File>(10);
 	private ArrayList<TargetFolderInfo> farmingDirs = new ArrayList<TargetFolderInfo>(10);
 	private static Log log = LogFactory.getLog(PlotArchiver.class);
 
 	public PlotArchiver(Configuration config) {
+		this.config = config;
 		setStagingDirs(config.getStagingFolders());
 		for(File target : config.getFarmingFolders()) {
 			TargetFolderInfo info = new TargetFolderInfo(target);
@@ -26,12 +28,14 @@ public class PlotArchiver {
 			int threads = config.getThreads();
 					info("Using " + threads + "threads");
 			executor= Executors.newFixedThreadPool(threads);
+			String strategy = config.getTargetStrategy();
 		}
 
 	}
 
 	public static void main(String[] args) {
 
+		log.info("Reading configuration...");
 		Configuration config = new Configuration();
 		PlotArchiver archiver = new PlotArchiver(config);
 		archiver.run();
@@ -79,9 +83,20 @@ public class PlotArchiver {
 	 * available space versus number of jobs in progress for a given target.
 	 * 
 	 */
-	public TargetFolderInfo chooseTargetFolder() {
+	public TargetFolderInfo chooseTargetFolderBalanced() {
 		TargetFolderInfo tfi = Collections.max(getFarmingDirs());
 		return tfi;
+	}
+	
+	public TargetFolderInfo chooseTargetFolder() {
+		
+		String strategy = config.getTargetStrategy();
+		
+		if (strategy.equalsIgnoreCase(Configuration.STRATEGY_RANDOM)){
+			return chooseTargetFolderRandom();
+		} else {
+			return chooseTargetFolderBalanced();
+		}
 	}
 
 	/**
