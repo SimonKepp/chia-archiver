@@ -111,7 +111,7 @@ public class ArchiveWorker implements Runnable {
 	}
 
 	private void info(String msg) {
-		log.infoinfo(msg);
+		log.info(msg);
 
 	}
 
