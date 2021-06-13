@@ -51,7 +51,7 @@ public class Configuration {
 	}
 
 	public int getThreads() {
-		String t = properties.getProperty("threads, "8");
+		String t = properties.getProperty("threads", "8");
 		return Integer.valueOf(t);
 	}
 

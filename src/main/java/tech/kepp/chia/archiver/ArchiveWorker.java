@@ -1,11 +1,15 @@
 package tech.kepp.chia.archiver;
 
 import java.io.*;
+import java.util.*;
 
-import tech.kepp.util.FileUtils;
+import org.apache.commons.logging.*;
+
 
 public class ArchiveWorker implements Runnable {
+	private Log log = LogFactory.getLog(getClass());
 	private PlotArchiver coordinator;
+	
 	private File source;
 //	private static final int buffer_size = 64 *1024;
 	
@@ -40,10 +44,10 @@ public class ArchiveWorker implements Runnable {
 				try {
 					moveFile(source, targetFolder);
 				} catch (IOException e) {
-					error("Failed to move File ["+ source + "] to ["+ targetFolder.getFolder().getPath() + "]", e
+					log.error("Failed to move File ["+ source + "] to ["+ targetFolder.getFolder().getPath() + "]", e);
 				}
 			} else {
-				info("skipping file [" + source.getPath() + "]");
+				log.info("skipping file [" + source.getPath() + "]");
 			}
 		}
 
@@ -103,27 +107,21 @@ public class ArchiveWorker implements Runnable {
 	}
 
 	private void debug(String msg) {
-		System.out.println("DEBUG: " + msg);
+		log.debug(msg);
 	}
 
 	private void info(String msg) {
-		System.out.println("INFO: " + msg);
+		log.infoinfo(msg);
 
 	}
 
 	private void warn(String msg) {
-		System.out.println("WARNING: " + msg);
+		log.warn(msg);
 
 	}
 	private void error(String msg) {
-		System.out.println("ERROR: " + msg);
-		System.err.println("ERROR: " + msg);
-
-	}
-	private void error(String msg, Throwable e) {
-		System.out.println("ERROR: " + msg);
-		System.err.println("ERROR: " + msg);
-		e.printStackTrace();
+		log.error(msg);
+	
 	}
 
 
